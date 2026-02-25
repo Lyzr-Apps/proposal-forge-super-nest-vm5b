@@ -26,6 +26,83 @@ const PROJECT_TYPES = [
   'Full-Service',
 ]
 
+// ─── Service Catalog ─────────────────────────────────────────────────────────
+
+interface ServiceCategory {
+  category: string
+  items: string[]
+}
+
+const SERVICE_CATALOG: ServiceCategory[] = [
+  {
+    category: 'Website Development & Maintenance',
+    items: [
+      'Developing and updating website pages for multiple locations',
+      'Creating new pages and campaigns as requested by staff and doctors',
+      'Fixing broken links and correcting text across all location pages',
+      'Performing backend WordPress theme and plugin updates weekly',
+      'Ensuring website compatibility and smooth functionality',
+    ],
+  },
+  {
+    category: 'Search Engine Optimization (SEO)',
+    items: [
+      'Writing and posting SEO-friendly blog posts',
+      'Optimizing blog posts and website pages with proper meta titles, descriptions, and image alt-text',
+      'Adjusting and adding internal links to improve site navigation and SEO',
+      'Optimizing image file sizes to enhance website loading speed and performance',
+    ],
+  },
+  {
+    category: 'Content Updates & Management',
+    items: [
+      'Handling basic content updates such as text changes, job postings, and individual location page edits',
+      'Coordinating with staff for content requests and updates',
+      'Maintaining consistent branding and messaging aligned with core values (Compassion, Efficiency, Patient-Centered Care)',
+    ],
+  },
+  {
+    category: 'Social Media Management',
+    items: [
+      'Writing and designing social media posts for platforms like Facebook, Instagram, and Twitter',
+      'Scheduling social media posts intermittently to promote location openings and ongoing updates',
+      'Posting grand opening announcements and other timely content',
+      'Creating custom 250-word posts specifically for Google My Business',
+    ],
+  },
+  {
+    category: 'Blog Posts',
+    items: [
+      'Writing, posting, and scheduling blog posts on relevant health and safety topics',
+      'SEO optimization of blog content including titles, descriptions, and alt-text',
+      'Blog topics including emergency medical information, seasonal safety tips, and poison prevention awareness',
+    ],
+  },
+  {
+    category: 'Patient Review System',
+    items: [
+      'Setting up patient survey and review pages/forms for new patients',
+      'Tracking survey results in the backend system',
+      'Coordinating with facility directors for survey follow-up and management',
+    ],
+  },
+  {
+    category: 'Google Business Profile Management',
+    items: [
+      'Updating Google Business profiles with accurate hours, photos, and information',
+      'Managing edits and awaiting Google confirmation for profile updates',
+      'Writing and posting Google My Business posts to enhance local SEO and engagement',
+    ],
+  },
+  {
+    category: 'Image Management',
+    items: [
+      'Adding or editing alt-text for images to improve accessibility and SEO',
+      'Optimizing image file sizes for faster website performance',
+    ],
+  },
+]
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface ProposalData {
@@ -324,6 +401,163 @@ function SkeletonSection() {
   )
 }
 
+function ServiceSelector({
+  selectedServices,
+  onToggleItem,
+  onToggleCategory,
+  onSelectAll,
+  onClearAll,
+}: {
+  selectedServices: Set<string>
+  onToggleItem: (item: string) => void
+  onToggleCategory: (category: ServiceCategory) => void
+  onSelectAll: () => void
+  onClearAll: () => void
+}) {
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
+  const [selectorOpen, setSelectorOpen] = useState(false)
+
+  const toggleExpand = (cat: string) => {
+    setExpandedCategories(prev => {
+      const next = new Set(prev)
+      if (next.has(cat)) next.delete(cat)
+      else next.add(cat)
+      return next
+    })
+  }
+
+  const isCategoryFullySelected = (cat: ServiceCategory) =>
+    cat.items.every(item => selectedServices.has(item))
+
+  const isCategoryPartiallySelected = (cat: ServiceCategory) =>
+    cat.items.some(item => selectedServices.has(item)) && !isCategoryFullySelected(cat)
+
+  const totalItems = SERVICE_CATALOG.reduce((acc, c) => acc + c.items.length, 0)
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <label className="text-[10px] tracking-widest uppercase text-muted-foreground flex items-center gap-1">
+          Service Line Items
+          <span className="text-muted-foreground/50 text-[9px] normal-case tracking-normal">(select to populate requirements)</span>
+        </label>
+        <span className="text-[10px] text-primary tracking-wider">
+          {selectedServices.size}/{totalItems} selected
+        </span>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => setSelectorOpen(!selectorOpen)}
+        className="w-full flex items-center justify-between bg-secondary/50 border border-border px-4 py-3 text-sm text-left hover:border-primary/50 transition-colors tracking-wider"
+      >
+        <span className="text-muted-foreground">
+          {selectedServices.size === 0
+            ? 'Browse and select services...'
+            : `${selectedServices.size} service${selectedServices.size !== 1 ? 's' : ''} selected`}
+        </span>
+        {selectorOpen ? <FiChevronUp size={14} className="text-muted-foreground" /> : <FiChevronDown size={14} className="text-muted-foreground" />}
+      </button>
+
+      {selectorOpen && (
+        <div className="border border-border bg-card max-h-[400px] overflow-y-auto">
+          {/* Bulk actions */}
+          <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-secondary/30 sticky top-0 z-10">
+            <button
+              type="button"
+              onClick={onSelectAll}
+              className="text-[10px] tracking-widest uppercase text-primary hover:text-primary/80 transition-colors"
+            >
+              Select All
+            </button>
+            <span className="text-border">|</span>
+            <button
+              type="button"
+              onClick={onClearAll}
+              className="text-[10px] tracking-widest uppercase text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Clear All
+            </button>
+          </div>
+
+          {SERVICE_CATALOG.map(cat => {
+            const expanded = expandedCategories.has(cat.category)
+            const fullySelected = isCategoryFullySelected(cat)
+            const partiallySelected = isCategoryPartiallySelected(cat)
+
+            return (
+              <div key={cat.category} className="border-b border-border/50 last:border-b-0">
+                <div className="flex items-center gap-3 px-4 py-3 hover:bg-secondary/30 transition-colors">
+                  {/* Category checkbox */}
+                  <button
+                    type="button"
+                    onClick={() => onToggleCategory(cat)}
+                    className={`w-4 h-4 border flex-shrink-0 flex items-center justify-center transition-colors ${
+                      fullySelected
+                        ? 'bg-primary border-primary'
+                        : partiallySelected
+                        ? 'border-primary bg-primary/20'
+                        : 'border-muted-foreground/40 hover:border-primary'
+                    }`}
+                  >
+                    {fullySelected && <FiCheck size={10} className="text-primary-foreground" />}
+                    {partiallySelected && <span className="w-2 h-0.5 bg-primary" />}
+                  </button>
+
+                  {/* Category label */}
+                  <button
+                    type="button"
+                    onClick={() => toggleExpand(cat.category)}
+                    className="flex-1 flex items-center justify-between text-left"
+                  >
+                    <span className="text-xs font-medium tracking-wider uppercase text-foreground">{cat.category}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] text-muted-foreground tracking-wider">
+                        {cat.items.filter(i => selectedServices.has(i)).length}/{cat.items.length}
+                      </span>
+                      {expanded ? <FiChevronUp size={12} className="text-muted-foreground" /> : <FiChevronDown size={12} className="text-muted-foreground" />}
+                    </div>
+                  </button>
+                </div>
+
+                {/* Individual items */}
+                {expanded && (
+                  <div className="pl-8 pr-4 pb-3 space-y-1">
+                    {cat.items.map(item => {
+                      const checked = selectedServices.has(item)
+                      return (
+                        <button
+                          key={item}
+                          type="button"
+                          onClick={() => onToggleItem(item)}
+                          className="w-full flex items-start gap-3 py-1.5 text-left group"
+                        >
+                          <span
+                            className={`w-3.5 h-3.5 border flex-shrink-0 flex items-center justify-center mt-0.5 transition-colors ${
+                              checked
+                                ? 'bg-primary border-primary'
+                                : 'border-muted-foreground/40 group-hover:border-primary'
+                            }`}
+                          >
+                            {checked && <FiCheck size={9} className="text-primary-foreground" />}
+                          </span>
+                          <span className={`text-xs tracking-wider leading-relaxed transition-colors ${checked ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground'}`}>
+                            {item}
+                          </span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function ProposalCard({
   proposal,
   onClick,
@@ -378,6 +612,9 @@ export default function Page() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [sampleData, setSampleData] = useState(false)
 
+  // ── Service Selection ──
+  const [selectedServices, setSelectedServices] = useState<Set<string>>(new Set())
+
   // ── Form ──
   const [formData, setFormData] = useState<FormData>({
     clientName: '',
@@ -418,6 +655,7 @@ export default function Page() {
       setFormData(SAMPLE_FORM)
       setProposalData(SAMPLE_PROPOSAL)
       setPdfUrl(null)
+      setSelectedServices(new Set())
     } else {
       setFormData({
         clientName: '',
@@ -430,6 +668,7 @@ export default function Page() {
       })
       setProposalData(null)
       setPdfUrl(null)
+      setSelectedServices(new Set())
     }
   }, [sampleData])
 
@@ -441,6 +680,63 @@ export default function Page() {
       delete next[field]
       return next
     })
+  }, [])
+
+  // ── Service selection helpers ──
+  const buildServiceText = useCallback((services: Set<string>): string => {
+    if (services.size === 0) return ''
+    const grouped: Record<string, string[]> = {}
+    for (const cat of SERVICE_CATALOG) {
+      const matching = cat.items.filter(item => services.has(item))
+      if (matching.length > 0) {
+        grouped[cat.category] = matching
+      }
+    }
+    return Object.entries(grouped)
+      .map(([category, items]) => `${category}:\n${items.map(i => `- ${i}`).join('\n')}`)
+      .join('\n\n')
+  }, [])
+
+  const handleToggleItem = useCallback((item: string) => {
+    setSelectedServices(prev => {
+      const next = new Set(prev)
+      if (next.has(item)) next.delete(item)
+      else next.add(item)
+      const text = buildServiceText(next)
+      setFormData(fd => ({ ...fd, serviceRequirements: text }))
+      setValidationErrors(ve => { const n = { ...ve }; delete n.serviceRequirements; return n })
+      return next
+    })
+  }, [buildServiceText])
+
+  const handleToggleCategory = useCallback((cat: ServiceCategory) => {
+    setSelectedServices(prev => {
+      const next = new Set(prev)
+      const allSelected = cat.items.every(i => next.has(i))
+      if (allSelected) {
+        cat.items.forEach(i => next.delete(i))
+      } else {
+        cat.items.forEach(i => next.add(i))
+      }
+      const text = buildServiceText(next)
+      setFormData(fd => ({ ...fd, serviceRequirements: text }))
+      setValidationErrors(ve => { const n = { ...ve }; delete n.serviceRequirements; return n })
+      return next
+    })
+  }, [buildServiceText])
+
+  const handleSelectAllServices = useCallback(() => {
+    const all = new Set<string>()
+    SERVICE_CATALOG.forEach(cat => cat.items.forEach(item => all.add(item)))
+    setSelectedServices(all)
+    const text = buildServiceText(all)
+    setFormData(fd => ({ ...fd, serviceRequirements: text }))
+    setValidationErrors(ve => { const n = { ...ve }; delete n.serviceRequirements; return n })
+  }, [buildServiceText])
+
+  const handleClearAllServices = useCallback(() => {
+    setSelectedServices(new Set())
+    setFormData(fd => ({ ...fd, serviceRequirements: '' }))
   }, [])
 
   const validate = useCallback((): boolean => {
@@ -529,6 +825,7 @@ Please provide a complete, polished sales proposal with executive summary, clien
     setProposalData(null)
     setPdfUrl(null)
     setSelectedProposal(null)
+    setSelectedServices(new Set())
     setActiveView('builder')
   }, [])
 
@@ -699,16 +996,28 @@ Please provide a complete, polished sales proposal with executive summary, clien
                         </select>
                       </div>
 
+                      {/* Service Line Items Selector */}
+                      <ServiceSelector
+                        selectedServices={selectedServices}
+                        onToggleItem={handleToggleItem}
+                        onToggleCategory={handleToggleCategory}
+                        onSelectAll={handleSelectAllServices}
+                        onClearAll={handleClearAllServices}
+                      />
+
                       {/* Service Requirements */}
                       <div className="space-y-2">
                         <label className="text-[10px] tracking-widest uppercase text-muted-foreground flex items-center gap-1">
                           Service Requirements <span className="text-destructive">*</span>
+                          {selectedServices.size > 0 && (
+                            <span className="text-muted-foreground/50 text-[9px] normal-case tracking-normal ml-1">(auto-populated from selections above)</span>
+                          )}
                         </label>
                         <textarea
                           value={formData.serviceRequirements}
                           onChange={(e) => updateField('serviceRequirements', e.target.value)}
-                          placeholder="Detail the specific services needed..."
-                          rows={4}
+                          placeholder="Select services above or type custom requirements..."
+                          rows={selectedServices.size > 0 ? 8 : 4}
                           className={`w-full bg-secondary/50 border ${validationErrors.serviceRequirements ? 'border-destructive' : 'border-border'} text-foreground text-sm px-4 py-3 resize-none focus:outline-none focus:border-primary transition-colors placeholder:text-muted-foreground/50 tracking-wider`}
                         />
                         {validationErrors.serviceRequirements && (
