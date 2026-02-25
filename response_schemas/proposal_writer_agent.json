@@ -1,0 +1,15 @@
+{
+  "agent_name": "Proposal Writer Agent",
+  "agent_id": "699f7a28180768b98e6c3b8e",
+  "description": "Composes the final polished sales proposal document incorporating client research, scope, pricing, and timeline into a professional, persuasive narrative",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "executive_summary": "string",
+    "scope_and_deliverables": "string",
+    "pricing_breakdown": "string",
+    "timeline_and_milestones": "string",
+    "terms_and_next_steps": "string"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "agent_name": "Proposal Coordinator",
+  "agent_id": "699f7a394b34ff0a9387f910",
+  "description": "Coordinates sub-agents to research client, structure deal terms, and compose the final proposal; aggregates all outputs into one polished document",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "proposal_title": "string",
+    "client_name": "string",
+    "executive_summary": "string",
+    "client_context": "string",
+    "scope_of_work": "string",
+    "deliverables": "string",
+    "pricing_breakdown": "string",
+    "total_estimate": "string",
+    "timeline_and_milestones": "string",
+    "terms_and_next_steps": "string",
+    "generated_date": "string"
+  },
+  "example_response": {
+    "proposal_title": "sample string",
+    "client_name": "sample string",
+    "executive_summary": "sample string",
+    "client_context": "sample string",
+    "scope_of_work": "sample string",
+    "deliverables": "sample string",
+    "pricing_breakdown": "sample string",
+    "total_estimate": "sample string",
+    "timeline_and_milestones": "sample string",
+    "terms_and_next_steps": "sample string",
+    "generated_date": "sample string"
+  },
+  "has_module_outputs": true,
+  "module_outputs_example": {
+    "artifact_files": [
+      {
+        "file_url": "https://example.com/file.pdf"
+      }
+    ]
+  }
+}

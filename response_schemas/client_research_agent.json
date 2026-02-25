@@ -1,0 +1,16 @@
+{
+  "agent_name": "Client Research Agent",
+  "agent_id": "699f7a27c3e6856608a3543f",
+  "description": "Analyzes client company profile using publicly available information to identify industry context, company size, recent news, and key talking points for proposal positioning",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "company_overview": "string",
+    "industry_context": "string",
+    "recent_news": "string",
+    "key_talking_points": ["string"],
+    "competitive_landscape": "string",
+    "strategic_positioning": "string"
+  }
+}

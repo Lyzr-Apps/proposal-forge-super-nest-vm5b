@@ -1,0 +1,33 @@
+{
+  "agent_name": "Scope & Pricing Agent",
+  "agent_id": "699f7a281dc006ed3c885f06",
+  "description": "Structures the scope of work, deliverables list, pricing breakdown, and project timeline based on service requirements, budget range, and project type",
+  "agent_type": "json",
+  "accessor": "result",
+  "auto_generated": true,
+  "response_schema": {
+    "scope_of_work": [
+      {
+        "phase": "string",
+        "description": "string",
+        "deliverables": ["string"]
+      }
+    ],
+    "pricing_breakdown": [
+      {
+        "item": "string",
+        "cost": "string",
+        "notes": "string"
+      }
+    ],
+    "total_estimate": "string",
+    "timeline": [
+      {
+        "milestone": "string",
+        "duration": "string",
+        "description": "string"
+      }
+    ],
+    "assumptions": ["string"]
+  }
+}

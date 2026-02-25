@@ -1,0 +1,93 @@
+{
+  "workflow": {
+    "nodes": [
+      {
+        "id": "input_node",
+        "type": "Input",
+        "label": "Deal Context Input",
+        "nodeCategory": "input"
+      },
+      {
+        "id": "proposal_coordinator",
+        "type": "Agent",
+        "label": "Proposal Coordinator (Manager)",
+        "nodeCategory": "agent"
+      },
+      {
+        "id": "client_research_agent",
+        "type": "Agent",
+        "label": "Client Research Agent",
+        "nodeCategory": "agent"
+      },
+      {
+        "id": "scope_pricing_agent",
+        "type": "Agent",
+        "label": "Scope & Pricing Agent",
+        "nodeCategory": "agent"
+      },
+      {
+        "id": "proposal_writer_agent",
+        "type": "Agent",
+        "label": "Proposal Writer Agent",
+        "nodeCategory": "agent"
+      },
+      {
+        "id": "output_node",
+        "type": "Output",
+        "label": "Final Proposal Output",
+        "nodeCategory": "end"
+      }
+    ],
+    "edges": [
+      { "source": "input_node", "target": "proposal_coordinator" },
+      { "source": "proposal_coordinator", "target": "client_research_agent" },
+      { "source": "proposal_coordinator", "target": "scope_pricing_agent" },
+      { "source": "proposal_coordinator", "target": "proposal_writer_agent" },
+      { "source": "proposal_coordinator", "target": "output_node" }
+    ]
+  },
+  "agents": {
+    "proposal_coordinator": {
+      "agent_id": "699f7a394b34ff0a9387f910",
+      "name": "Proposal Coordinator",
+      "type": "manager",
+      "provider": "OpenAI",
+      "model": "gpt-4.1",
+      "temperature": 0.3,
+      "top_p": 1,
+      "file_output": true,
+      "managed_agents": [
+        "699f7a27c3e6856608a3543f",
+        "699f7a281dc006ed3c885f06",
+        "699f7a28180768b98e6c3b8e"
+      ]
+    },
+    "client_research_agent": {
+      "agent_id": "699f7a27c3e6856608a3543f",
+      "name": "Client Research Agent",
+      "type": "sub-agent",
+      "provider": "Perplexity",
+      "model": "sonar-pro",
+      "temperature": 0.2,
+      "top_p": 1
+    },
+    "scope_pricing_agent": {
+      "agent_id": "699f7a281dc006ed3c885f06",
+      "name": "Scope & Pricing Agent",
+      "type": "sub-agent",
+      "provider": "OpenAI",
+      "model": "gpt-4.1",
+      "temperature": 0.4,
+      "top_p": 1
+    },
+    "proposal_writer_agent": {
+      "agent_id": "699f7a28180768b98e6c3b8e",
+      "name": "Proposal Writer Agent",
+      "type": "sub-agent",
+      "provider": "OpenAI",
+      "model": "gpt-4.1",
+      "temperature": 0.7,
+      "top_p": 0.95
+    }
+  }
+}
